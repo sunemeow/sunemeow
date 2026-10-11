@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#b99a7e">
+  <!-- Своя иконка: положи файл favicon.png рядом с index.html -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" href="favicon.png">
+  <title>Portfolio — Instagram / Twitch / TikTok</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #b99a7e;
+      --accent: #168cff;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--accent);
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    .background {
+      position: fixed;
+      inset: -2%;
+      z-index: 0;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(72, 39, 16, .28), rgba(255, 211, 169, .12)),
+        url("background.jpg") center / cover no-repeat,
+        #b99a7e;
+    }
+
+    .background video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      inset: 0;
+      object-fit: cover;
+      filter: blur(2px) sepia(.22) saturate(.85);
+      transform: scale(1.025);
+    }
+
+    .background::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(190, 125, 75, .15);
+      pointer-events: none;
+    }
+
+    /* Угловая навигация поверх фонового видео */
+    nav {
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .nav-link {
+      position: absolute;
+      display: block;
+      max-width: 45vw;
+      color: var(--accent);
+      font-family: "Space Grotesk", "Inter", sans-serif;
+      font-size: clamp(36px, calc(5vw - 2px), 74px);
+      line-height: 1.05;
+      letter-spacing: -.015em;
+      text-decoration: none;
+      text-shadow: 0 0 15px var(--accent);
+      pointer-events: auto;
+      opacity: 0;
+      animation: corner-appear .85s cubic-bezier(.2,.75,.25,1) forwards;
+      transition: transform .28s ease, text-shadow .28s ease, filter .28s ease;
+      will-change: transform, opacity;
+    }
+
+    .top-left { animation-delay: .12s; transform-origin: top left; }
+    .top-right { animation-delay: .24s; transform-origin: top right; }
+    .bottom-left { animation-delay: .36s; transform-origin: bottom left; }
+    .bottom-right { animation-delay: .48s; transform-origin: bottom right; }
+
+    .nav-link:hover,
+    .nav-link:focus-visible {
+      transform: scale(1.14);
+      text-shadow: 0 0 10px var(--accent), 0 0 28px var(--accent);
+      filter: brightness(1.2);
+      outline: none;
+    }
+
+    @keyframes corner-appear {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .top-left { top: 4%; left: 1.5%; }
+    .top-right { top: 4%; right: 1.8%; text-align: right; }
+    .bottom-left { bottom: 5%; left: 1.5%; }
+    .bottom-right { bottom: 5%; right: 1.8%; text-align: right; }
+
+    .rating {
+      position: fixed;
+      z-index: 2;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      width: min(456px, 82vw);
+      min-height: 92px;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      background: rgba(255, 220, 190, .08);
+      box-shadow: 0 0 22px color-mix(in srgb, var(--accent) 25%, transparent);
+      font-weight: 800;
+    }
+
+    .rating-letter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26%;
+      flex-shrink: 0;
+      border-right: 2px solid var(--accent);
+      font-family: "Space Grotesk", Georgia, serif;
+      font-weight: 900;
+      font-size: 83px;
+      line-height: 1;
+    }
+
+    .rating-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .rating-title {
+      min-height: 31px;
+      padding: 3px 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      border-bottom: 2px solid var(--accent);
+      font-size: clamp(11px, 1vw, 16px);
+      line-height: 1;
+    }
+
+    .globe { font-size: 21px; font-weight: 400; }
+
+    /* Центральная буква, рейтинг и символ ® не увеличиваются при наведении. */
+
+    .rating-description {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 6px;
+      font-size: clamp(9px, .95vw, 14px);
+      line-height: 1.2;
+    }
+
+    .registered {
+      position: absolute;
+      right: -24px;
+      bottom: -7px;
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .music-toggle {
+      position: fixed;
+      z-index: 5;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      padding: 9px 14px;
+      color: var(--accent);
+      background: rgba(20, 14, 10, .42);
+      backdrop-filter: blur(8px);
+      font: 700 12px/1 "Inter", Arial, sans-serif;
+      letter-spacing: .04em;
+      cursor: pointer;
+      text-shadow: 0 0 10px var(--accent);
+      box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 24%, transparent);
+      transition: background .2s ease, transform .2s ease;
+    }
+
+    .music-toggle:hover {
+      background: rgba(20, 14, 10, .68);
+      transform: translateX(-50%) scale(1.1);
+      text-shadow: 0 0 14px var(--accent);
+    }
+
+    @media (max-width: 600px) {
+      .music-toggle {
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        font-size: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .music-toggle::before {
+        content: "♫";
+        font-size: 22px;
+        line-height: 1;
+      }
+
+      .nav-link {
+        max-width: 46vw;
+        font-size: clamp(21px, calc(6vw - 2px), 36px);
+        letter-spacing: -.02em;
+      }
+
+      .top-left { top: 4%; left: 4%; }
+      .top-right { top: 4%; right: 4%; }
+      .bottom-left { bottom: 5%; left: 4%; }
+      .bottom-right { bottom: 5%; right: 4%; }
+
+      .rating { width: min(375px, 88vw); min-height: 77px; }
+      .rating-letter { font-size: 64px; }
+      .rating-title { min-height: 26px; font-size: 11px; gap: 7px; }
+      .rating-description { font-size: clamp(8px, 2vw, 10px); }
+      .globe { font-size: 16px; }
+      .registered { right: -17px; font-size: 14px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nav-link {
+        animation: none;
+        opacity: 1;
+        transition: none;
+        will-change: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="background" aria-hidden="true">
+    <video autoplay muted loop playsinline>
+      <source src="background.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <audio id="site-music" loop preload="auto">
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+  <button class="music-toggle" id="music-toggle" type="button" aria-label="Включить музыку">♫ Включить музыку</button>
+
+  <nav aria-label="Основная навигация">
+    <a class="nav-link top-left" href="https://www.instagram.com/sunemeoww/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">Instagram →</a>
+    <a class="nav-link top-right" href="https://www.twitch.tv/gege228_" target="_blank" rel="noopener noreferrer">Twitch →</a>
+    <a class="nav-link bottom-left" href="https://www.tiktok.com/@sune_meow" target="_blank" rel="noopener noreferrer">TikTok ↓</a>
+    <a class="nav-link bottom-right" href="https://t.me/kitticatss" target="_blank" rel="noopener noreferrer">Telegram →</a>
+  </nav>
+
+  <div class="rating" aria-label="Возрастной рейтинг">
+    <div class="rating-letter">R</div>
+    <div class="rating-info">
+      <div class="rating-title">
+        <span>RESTRICTED</span>
+        <span class="globe">◎</span>
+      </div>
+      <div class="rating-description">
+        UNDER 17 REQUIRES ACCOMPANYING<br>
+        PARENTS OR ADULT GUARDIAN
+      </div>
+    </div>
+    <span class="registered">®</span>
+  </div>
+
+  <script>
+    // Перемешиваем палитру и используем каждый цвет один раз,
+    // прежде чем начать новый цикл. При обычном обновлении цвет не повторяется.
+    const colors = ["#168cff", "#ff3030", "#ff69b4", "#ffffff",
+                    "#b8ff3b", "#b18cff", "#ff8a3d", "#00e5c0"];
+    const storageKey = "portfolioColorDeck";
+    let deck = [];
+    try {
+      deck = JSON.parse(localStorage.getItem(storageKey) || "[]");
+      if (!Array.isArray(deck) || deck.some(color => !colors.includes(color))) deck = [];
+    } catch (error) {
+      deck = [];
+    }
+
+    if (deck.length === 0) {
+      deck = [...colors];
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+    }
+
+    const accent = deck.pop();
+    document.documentElement.style.setProperty("--accent", accent);
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(deck));
+    } catch (error) {
+      // Если хранилище отключено, сайт продолжит работать с выбранным цветом.
+    }
+
+    // Пытаемся включить музыку сразу. Некоторые браузеры блокируют
+    // автоматическое воспроизведение со звуком до первого действия пользователя.
+    const music = document.getElementById("site-music");
+    music.volume = 0.1; // Громкость музыки — 10%
+    const musicToggle = document.getElementById("music-toggle");
+
+    function updateMusicButton(isPlaying) {
+      musicToggle.textContent = isPlaying ? "♫ Выключить музыку" : "♫ Включить музыку";
+      musicToggle.setAttribute("aria-label", isPlaying ? "Выключить музыку" : "Включить музыку");
+    }
+
+    musicToggle.addEventListener("click", async () => {
+      if (!music.paused) {
+        music.pause();
+        updateMusicButton(false);
+        return;
+      }
+      try {
+        await music.play();
+        updateMusicButton(true);
+      } catch (error) {
+        updateMusicButton(false);
+      }
+    });
+
+    music.play().then(() => updateMusicButton(true)).catch(() => updateMusicButton(false));
+  </script>
+</body>
+</html>
